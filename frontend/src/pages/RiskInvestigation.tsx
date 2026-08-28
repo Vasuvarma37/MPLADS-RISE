@@ -27,12 +27,12 @@ const SIGNAL_ICONS: Record<string, any> = {
 };
 
 const SIGNAL_COLORS: Record<string, { bg: string; border: string; icon: string; badge: string }> = {
-  cost_anomaly:     { bg: 'bg-red-950/40',    border: 'border-red-800/50',    icon: 'text-red-400',    badge: 'bg-red-900/50 text-red-300' },
-  progress_anomaly: { bg: 'bg-orange-950/40', border: 'border-orange-800/50', icon: 'text-orange-400', badge: 'bg-orange-900/50 text-orange-300' },
-  delay_anomaly:    { bg: 'bg-amber-950/40',  border: 'border-amber-800/50',  icon: 'text-amber-400',  badge: 'bg-amber-900/50 text-amber-300' },
-  payment_anomaly:  { bg: 'bg-red-950/40',    border: 'border-red-800/50',    icon: 'text-red-400',    badge: 'bg-red-900/50 text-red-300' },
-  duplicate_signal: { bg: 'bg-purple-950/40', border: 'border-purple-800/50', icon: 'text-purple-400', badge: 'bg-purple-900/50 text-purple-300' },
-  ml_anomaly:       { bg: 'bg-blue-950/40',   border: 'border-blue-800/50',   icon: 'text-blue-400',   badge: 'bg-blue-900/50 text-blue-300' },
+  cost_anomaly:     { bg: 'bg-red-950/40',    border: 'border-red-500/50',    icon: 'text-red-400',    badge: 'bg-red-500/20 text-red-300 border-red-500/30' },
+  progress_anomaly: { bg: 'bg-orange-950/40', border: 'border-orange-500/50', icon: 'text-orange-400', badge: 'bg-orange-500/20 text-orange-300 border-orange-500/30' },
+  delay_anomaly:    { bg: 'bg-amber-950/40',  border: 'border-amber-500/50',  icon: 'text-amber-400',  badge: 'bg-amber-500/20 text-amber-300 border-amber-500/30' },
+  payment_anomaly:  { bg: 'bg-red-950/40',    border: 'border-red-500/50',    icon: 'text-red-400',    badge: 'bg-red-500/20 text-red-300 border-red-500/30' },
+  duplicate_signal: { bg: 'bg-purple-950/40', border: 'border-purple-500/50', icon: 'text-purple-400', badge: 'bg-purple-500/20 text-purple-300 border-purple-500/30' },
+  ml_anomaly:       { bg: 'bg-blue-950/40',   border: 'border-blue-500/50',   icon: 'text-blue-400',   badge: 'bg-blue-500/20 text-blue-300 border-blue-500/30' },
 };
 
 const LEVEL_CONFIG = {
@@ -367,7 +367,7 @@ export default function RiskInvestigation() {
           </div>
 
           {/* ── Detected Signals ── */}
-          <Card className="p-5 bg-slate-900 border-slate-800">
+          <Card className="p-5">
             <h2 className="font-bold text-slate-100 text-sm mb-4 flex items-center gap-2">
               <FileWarning className="w-4 h-4 text-orange-400" />
               Detected Signals
@@ -392,7 +392,7 @@ export default function RiskInvestigation() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
 
             {/* Why Flagged */}
-            <Card className="p-5 bg-slate-900 border-slate-800">
+            <Card className="p-5">
               <h2 className="font-bold text-slate-100 text-sm mb-4 flex items-center gap-2">
                 <Info className="w-4 h-4 text-blue-400" />
                 Why Flagged?
@@ -411,7 +411,7 @@ export default function RiskInvestigation() {
             </Card>
 
             {/* Recommended Review */}
-            <Card className="p-5 bg-slate-900 border-slate-800">
+            <Card className="p-5">
               <h2 className="font-bold text-slate-100 text-sm mb-4 flex items-center gap-2">
                 <ChevronRight className="w-4 h-4 text-emerald-400" />
                 Recommended Review
@@ -431,7 +431,7 @@ export default function RiskInvestigation() {
           </div>
 
           {/* ── Timeline Summary ── */}
-          <Card className="p-5 bg-slate-900 border-slate-800">
+          <Card className="p-5">
             <h2 className="font-bold text-slate-100 text-sm mb-4 flex items-center gap-2">
               <Calendar className="w-4 h-4 text-blue-400" />
               Project Timeline &amp; Progress

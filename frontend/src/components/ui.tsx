@@ -28,7 +28,7 @@ export function Card({ children, className = '', style, onClick }: {
 }) {
   return (
     <div
-      className={`bg-white border border-slate-200 rounded-xl shadow-sm ${onClick ? 'cursor-pointer card-hover' : ''} ${className}`}
+      className={`bg-slate-900/60 backdrop-blur-md border border-slate-800/60 rounded-xl shadow-xl ${onClick ? 'cursor-pointer card-hover' : ''} ${className}`}
       style={style}
       onClick={onClick}
     >
@@ -42,17 +42,17 @@ export function MetricCard({ title, value, subtitle, icon: Icon, trend, trendVal
   icon?: React.ElementType; trend?: 'up' | 'down'; trendValue?: string; color?: string; invertTrend?: boolean;
 }) {
   const colorMap: Record<string, string> = {
-    blue: 'bg-blue-50 text-blue-600', green: 'bg-green-50 text-green-600',
-    orange: 'bg-orange-50 text-orange-600', red: 'bg-red-50 text-red-600',
-    purple: 'bg-purple-50 text-purple-600',
+    blue: 'bg-blue-900/30 text-blue-400', green: 'bg-green-900/30 text-green-400',
+    orange: 'bg-orange-900/30 text-orange-400', red: 'bg-red-900/30 text-red-400',
+    purple: 'bg-purple-900/30 text-purple-400',
   };
   const isUpPositive = invertTrend ? trend === 'down' : trend === 'up';
   return (
     <Card className="p-5 card-hover fade-in">
       <div className="flex justify-between items-start">
         <div className="flex-1">
-          <p className="text-xs font-medium text-slate-500 uppercase tracking-wide">{title}</p>
-          <h3 className="text-2xl font-bold text-slate-900 mt-1">{value}</h3>
+          <p className="text-xs font-medium text-slate-400 uppercase tracking-wide">{title}</p>
+          <h3 className="text-2xl font-bold text-slate-100 mt-1">{value}</h3>
         </div>
         {Icon && (
           <div className={`p-2.5 rounded-xl ${colorMap[color] || colorMap.blue}`}>
@@ -63,11 +63,11 @@ export function MetricCard({ title, value, subtitle, icon: Icon, trend, trendVal
       {(trendValue || subtitle) && (
         <div className="mt-3 flex items-center gap-1.5 text-xs">
           {trendValue && (
-            <span className={isUpPositive ? 'text-green-600 font-medium' : 'text-red-600 font-medium'}>
+            <span className={isUpPositive ? 'text-green-400 font-medium' : 'text-red-400 font-medium'}>
               {trend === 'up' ? '↑' : '↓'} {trendValue}
             </span>
           )}
-          {subtitle && <span className="text-slate-400">{subtitle}</span>}
+          {subtitle && <span className="text-slate-500">{subtitle}</span>}
         </div>
       )}
     </Card>
@@ -80,14 +80,14 @@ export function DualProgressBar({ physical, financial }: { physical: number; fin
   const gap = Math.max(0, f - p);
   return (
     <div className="space-y-1.5 w-full">
-      <div className="flex justify-between text-xs text-slate-500">
+      <div className="flex justify-between text-xs text-slate-400">
         <span>P:{p}%</span>
         <span>F:{f}%</span>
       </div>
-      <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden flex">
-        <div className="h-full bg-blue-500 progress-fill rounded-full" style={{ width: `${p}%` }} />
+      <div className="w-full h-2 bg-slate-800 rounded-full overflow-hidden flex">
+        <div className="h-full bg-blue-500 progress-fill rounded-full shadow-[0_0_8px_rgba(59,130,246,0.5)]" style={{ width: `${p}%` }} />
         {gap > 0 && (
-          <div className="h-full bg-red-400 opacity-60 progress-fill" style={{ width: `${gap}%` }} />
+          <div className="h-full bg-red-500 opacity-80 progress-fill shadow-[0_0_8px_rgba(239,68,68,0.5)]" style={{ width: `${gap}%` }} />
         )}
       </div>
     </div>
@@ -105,13 +105,13 @@ export function Button({
   icon?: React.ElementType; onClick?: () => void; className?: string; disabled?: boolean;
   size?: 'sm' | 'md';
 }) {
-  const base = `inline-flex items-center justify-center font-medium rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-offset-1 disabled:opacity-50 disabled:cursor-not-allowed`;
+  const base = `inline-flex items-center justify-center font-medium rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-offset-slate-950 disabled:opacity-50 disabled:cursor-not-allowed`;
   const sizes = { sm: 'px-3 py-1.5 text-xs', md: 'px-4 py-2 text-sm' };
   const variants = {
-    primary: 'bg-blue-900 text-white hover:bg-blue-800 focus:ring-blue-900 shadow-sm',
-    secondary: 'bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 focus:ring-slate-400',
-    danger: 'bg-red-600 text-white hover:bg-red-700 focus:ring-red-600',
-    ghost: 'bg-transparent text-slate-600 hover:bg-slate-100 focus:ring-slate-300',
+    primary: 'bg-blue-600 text-white hover:bg-blue-500 focus:ring-blue-600 shadow-[0_0_15px_rgba(37,99,235,0.4)]',
+    secondary: 'bg-slate-800 border border-slate-700 text-slate-200 hover:bg-slate-700 focus:ring-slate-600',
+    danger: 'bg-red-600 text-white hover:bg-red-500 focus:ring-red-600 shadow-[0_0_15px_rgba(220,38,38,0.4)]',
+    ghost: 'bg-transparent text-slate-400 hover:bg-slate-800 hover:text-slate-200 focus:ring-slate-700',
   };
   return (
     <button onClick={onClick} disabled={disabled}
@@ -125,7 +125,7 @@ export function Button({
 
 export function EmptyState({ message, icon: Icon }: { message: string; icon?: React.ElementType }) {
   return (
-    <div className="flex flex-col items-center justify-center py-16 text-slate-400">
+    <div className="flex flex-col items-center justify-center py-16 text-slate-500">
       {Icon && <Icon className="w-12 h-12 mb-3 opacity-40" />}
       <p className="text-sm">{message}</p>
     </div>
@@ -134,10 +134,13 @@ export function EmptyState({ message, icon: Icon }: { message: string; icon?: Re
 
 export function StatusDot({ status }: { status: string }) {
   const colors: Record<string, string> = {
-    NEW: 'bg-red-500', UNDER_REVIEW: 'bg-amber-500', ASSIGNED: 'bg-blue-500',
-    RESOLVED: 'bg-green-500', DISMISSED: 'bg-slate-400',
+    NEW: 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.6)]', 
+    UNDER_REVIEW: 'bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.6)]', 
+    ASSIGNED: 'bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.6)]',
+    RESOLVED: 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]', 
+    DISMISSED: 'bg-slate-500',
   };
-  return <span className={`inline-block w-2 h-2 rounded-full ${colors[status] || 'bg-slate-400'}`} />;
+  return <span className={`inline-block w-2 h-2 rounded-full ${colors[status] || 'bg-slate-500'}`} />;
 }
 
 /** Simple toast/banner notification */
@@ -145,12 +148,12 @@ export function Toast({ message, type = 'success', onClose }: {
   message: string; type?: 'success' | 'error' | 'info'; onClose: () => void;
 }) {
   const colors = {
-    success: 'bg-green-600 text-white',
-    error: 'bg-red-600 text-white',
-    info: 'bg-blue-700 text-white',
+    success: 'bg-green-600/90 border-green-500 text-white',
+    error: 'bg-red-600/90 border-red-500 text-white',
+    info: 'bg-blue-600/90 border-blue-500 text-white',
   };
   return (
-    <div className={`fixed bottom-5 right-5 z-50 flex items-center gap-3 px-4 py-3 rounded-xl shadow-xl text-sm font-medium ${colors[type]}`}
+    <div className={`fixed bottom-5 right-5 z-50 flex items-center gap-3 px-4 py-3 rounded-xl border shadow-[0_10px_40px_rgba(0,0,0,0.5)] backdrop-blur-md text-sm font-medium ${colors[type]}`}
       style={{ animation: 'fadeIn 0.3s ease' }}>
       <span>{type === 'success' ? '✓' : type === 'error' ? '✕' : 'ℹ'} {message}</span>
       <button onClick={onClose} className="ml-2 opacity-70 hover:opacity-100 font-bold">×</button>

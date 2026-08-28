@@ -84,25 +84,25 @@ export default function Analytics() {
       </div>
 
       <Card className="p-5">
-        <h3 className="font-semibold text-slate-800 text-sm mb-1">Financial vs Physical Progress — Anomaly Detection</h3>
+        <h3 className="font-semibold text-slate-200 text-sm mb-1">Financial vs Physical Progress — Anomaly Detection</h3>
         <p className="text-xs text-slate-400 mb-4">Points far from the diagonal indicate payment anomalies. Bubble size = sanctioned amount.</p>
         {loading ? <Skeleton className="h-72" /> : (
           <ResponsiveContainer width="100%" height={300}>
             <ScatterChart margin={{ top: 10, right: 10, bottom: 30, left: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+              <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
               <XAxis dataKey="x" name="Financial %" type="number" domain={[0, 100]}
-                label={{ value: 'Financial Progress (%)', position: 'insideBottom', offset: -15, fontSize: 11 }}
-                tick={{ fontSize: 10 }} axisLine={false} tickLine={false}
+                label={{ value: 'Financial Progress (%)', position: 'insideBottom', offset: -15, fill: '#94a3b8', fontSize: 11 }}
+                tick={{ fontSize: 10, fill: '#94a3b8' }} axisLine={{ stroke: '#334155' }} tickLine={false}
               />
               <YAxis dataKey="y" name="Physical %" type="number" domain={[0, 100]}
-                label={{ value: 'Physical Progress (%)', angle: -90, position: 'insideLeft', fontSize: 11 }}
-                tick={{ fontSize: 10 }} axisLine={false} tickLine={false}
+                label={{ value: 'Physical Progress (%)', angle: -90, position: 'insideLeft', fill: '#94a3b8', fontSize: 11 }}
+                tick={{ fontSize: 10, fill: '#94a3b8' }} axisLine={{ stroke: '#334155' }} tickLine={false}
               />
               <ZAxis dataKey="z" range={[20, 200]} />
               <Tooltip cursor={{ strokeDasharray: '3 3' }}
-                contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 20px rgba(0,0,0,0.1)' }}
+                contentStyle={{ borderRadius: '8px', border: 'none', backgroundColor: '#1e293b', color: '#f8fafc', boxShadow: '0 4px 20px rgba(0,0,0,0.5)' }}
               />
-              <Scatter data={scatter} fill="#2563eb" fillOpacity={0.6} />
+              <Scatter data={scatter} fill="#3b82f6" fillOpacity={0.7} />
             </ScatterChart>
           </ResponsiveContainer>
         )}
@@ -112,13 +112,13 @@ export default function Analytics() {
       </Card>
 
       <Card className="overflow-hidden">
-        <div className="p-4 border-b border-slate-100 flex items-center justify-between">
-          <h3 className="font-semibold text-slate-800 text-sm">State-wise Summary</h3>
+        <div className="p-4 border-b border-slate-700/50 flex items-center justify-between">
+          <h3 className="font-semibold text-slate-200 text-sm">State-wise Summary</h3>
           <span className="text-xs text-slate-400">Sorted by average delay (worst first)</span>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="text-xs text-slate-500 uppercase bg-slate-50 border-b border-slate-100">
+            <thead className="text-xs text-slate-400 uppercase bg-slate-800/50 border-b border-slate-700">
               <tr>
                 <th className="px-4 py-3 text-left font-medium">#</th>
                 <th className="px-4 py-3 text-left font-medium">State</th>
@@ -129,31 +129,31 @@ export default function Analytics() {
                 <th className="px-4 py-3 text-right font-medium">Risk Level</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-50">
+            <tbody className="divide-y divide-slate-800/60">
               {[...stateData].sort((a, b) => b.avg_delay_days - a.avg_delay_days).map((row, idx) => {
                 const isWorst = idx < 3;
-                const rowBg = idx === 0 ? 'bg-red-50/60' : idx === 1 ? 'bg-orange-50/40' : idx === 2 ? 'bg-amber-50/30' : '';
+                const rowBg = idx === 0 ? 'bg-red-900/20' : idx === 1 ? 'bg-orange-900/20' : idx === 2 ? 'bg-amber-900/20' : '';
                 return (
                   <tr key={row.state} className={`table-row-hover ${rowBg}`}>
                     <td className="px-4 py-3">
-                      <span className={`text-xs font-bold ${idx === 0 ? 'text-red-600' : idx === 1 ? 'text-orange-600' : idx === 2 ? 'text-amber-600' : 'text-slate-400'}`}>
+                      <span className={`text-xs font-bold ${idx === 0 ? 'text-red-400' : idx === 1 ? 'text-orange-400' : idx === 2 ? 'text-amber-400' : 'text-slate-500'}`}>
                         {isWorst ? ['🔴', '🟠', '🟡'][idx] : idx + 1}
                       </span>
                     </td>
-                    <td className="px-4 py-3 font-medium text-slate-800">{row.state}</td>
-                    <td className="px-4 py-3 text-right text-slate-600">{row.project_count}</td>
-                    <td className="px-4 py-3 text-right text-slate-600 hidden sm:table-cell">{row.total_sanctioned_lakh.toLocaleString()}</td>
-                    <td className="px-4 py-3 text-right text-slate-600 hidden md:table-cell">{row.total_expenditure_lakh.toLocaleString()}</td>
+                    <td className="px-4 py-3 font-medium text-slate-200">{row.state}</td>
+                    <td className="px-4 py-3 text-right text-slate-400">{row.project_count}</td>
+                    <td className="px-4 py-3 text-right text-slate-400 hidden sm:table-cell">{row.total_sanctioned_lakh.toLocaleString()}</td>
+                    <td className="px-4 py-3 text-right text-slate-400 hidden md:table-cell">{row.total_expenditure_lakh.toLocaleString()}</td>
                     <td className="px-4 py-3 text-right">
-                      <span className={`font-semibold text-xs ${row.avg_delay_days > 100 ? 'text-red-600' : row.avg_delay_days > 50 ? 'text-orange-600' : 'text-green-600'}`}>
+                      <span className={`font-semibold text-xs ${row.avg_delay_days > 100 ? 'text-red-400' : row.avg_delay_days > 50 ? 'text-orange-400' : 'text-green-400'}`}>
                         {row.avg_delay_days.toFixed(0)}d
                       </span>
                     </td>
                     <td className="px-4 py-3 text-right">
                       <span className={`text-xs px-2 py-0.5 rounded-full font-semibold ${
-                        row.avg_delay_days > 100 ? 'bg-red-50 text-red-700 border border-red-200' :
-                        row.avg_delay_days > 50 ? 'bg-orange-50 text-orange-700 border border-orange-200' :
-                        'bg-green-50 text-green-700 border border-green-200'
+                        row.avg_delay_days > 100 ? 'bg-red-500/20 text-red-400 border border-red-500/30' :
+                        row.avg_delay_days > 50 ? 'bg-orange-500/20 text-orange-400 border border-orange-500/30' :
+                        'bg-green-500/20 text-green-400 border border-green-500/30'
                       }`}>
                         {row.avg_delay_days > 100 ? 'HIGH RISK' : row.avg_delay_days > 50 ? 'MEDIUM' : 'LOW'}
                       </span>

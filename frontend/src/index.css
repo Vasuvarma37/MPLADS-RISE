@@ -17,8 +17,8 @@
 
 body {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  background-color: #f1f5f9;
-  color: #1e293b;
+  background-color: #020617;
+  color: #f8fafc;
   margin: 0;
   padding: 0;
 }
@@ -80,7 +80,7 @@ body {
 }
 
 /* Table row hover */
-.table-row-hover:hover { background-color: #f8fafc; }
+.table-row-hover:hover { background-color: rgba(255, 255, 255, 0.05); }
 
 /* Risk score gradient text */
 .risk-score-critical { color: #dc2626; font-weight: 700; }

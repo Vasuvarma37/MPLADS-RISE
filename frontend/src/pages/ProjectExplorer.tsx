@@ -136,7 +136,7 @@ export default function ProjectExplorer() {
       <Card className="overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="text-xs text-slate-500 uppercase bg-slate-50 border-b border-slate-100">
+            <thead className="text-xs text-slate-400 uppercase bg-slate-800/50 border-b border-slate-700">
               <tr>
                 <th className="px-4 py-3 text-left font-medium">Project Details</th>
                 <th className="px-4 py-3 text-left font-medium hidden sm:table-cell">Location & Agency</th>
@@ -146,7 +146,7 @@ export default function ProjectExplorer() {
                 <th className="px-4 py-3 text-right font-medium">Action</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-50">
+            <tbody className="divide-y divide-slate-800/60">
               {loading ? (
                 Array(8).fill(0).map((_, i) => (
                   <tr key={i}><td colSpan={6} className="px-4 py-3"><Skeleton className="h-10" /></td></tr>
@@ -164,20 +164,20 @@ export default function ProjectExplorer() {
                   onClick={() => navigate(`/projects/${p.project_id}`)}
                 >
                   <td className="px-4 py-3.5">
-                    <div className="font-semibold text-blue-900 text-xs">{p.project_id}</div>
-                    <div className="text-slate-700 text-xs font-medium mt-0.5 truncate max-w-[220px]" title={p.work_name}>
+                    <div className="font-semibold text-blue-400 text-xs">{p.project_id}</div>
+                    <div className="text-slate-200 text-xs font-medium mt-0.5 truncate max-w-[220px]" title={p.work_name}>
                       {p.work_name}
                     </div>
                     <div className="text-slate-400 text-xs mt-0.5">{p.work_type}</div>
                   </td>
                   <td className="px-4 py-3.5 hidden sm:table-cell">
-                    <div className="text-xs text-slate-700">{p.district}, {p.state}</div>
+                    <div className="text-xs text-slate-300">{p.district}, {p.state}</div>
                     <div className="text-xs text-slate-400 flex items-center gap-1 mt-0.5">
                       <Building2 className="w-3 h-3" /> {p.implementing_agency}
                     </div>
                   </td>
                   <td className="px-4 py-3.5 hidden lg:table-cell">
-                    <div className="text-xs text-slate-700">Exp: ₹{p.expenditure_amount_lakh} | San: ₹{p.sanction_amount_lakh}</div>
+                    <div className="text-xs text-slate-300">Exp: ₹{p.expenditure_amount_lakh} | San: ₹{p.sanction_amount_lakh}</div>
                     <div className="flex items-center gap-2 mt-1.5">
                       <div className={`flex items-center gap-1 text-[10px] font-medium px-1.5 py-0.5 rounded ${p.has_photographs ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`} title="Asset Photographs Upload Status">
                         <Camera className="w-3 h-3" /> {p.has_photographs ? 'Photos' : 'No Photos'}
