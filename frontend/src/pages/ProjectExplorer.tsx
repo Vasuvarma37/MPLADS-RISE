@@ -63,8 +63,8 @@ export default function ProjectExplorer() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
         <div>
-          <h1 className="text-xl font-bold text-slate-900">Project Intelligence Explorer</h1>
-          <p className="text-sm text-slate-500">{total.toLocaleString()} projects · Search, filter, and analyze</p>
+          <h1 className="text-xl font-bold text-white">Project Intelligence Explorer</h1>
+          <p className="text-sm text-slate-400">{total.toLocaleString()} projects · Search, filter, and analyze</p>
         </div>
       </div>
 

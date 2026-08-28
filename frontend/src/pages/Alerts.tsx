@@ -62,23 +62,23 @@ export default function AlertsPage() {
     <div className="space-y-5 fade-in">
       {/* Header */}
       <div>
-        <h1 className="text-xl font-bold text-slate-900">Alerts & Flags</h1>
-        <p className="text-sm text-slate-500">{totalActive} active alerts requiring attention</p>
+        <h1 className="text-xl font-bold text-white">Alerts & Flags</h1>
+        <p className="text-sm text-slate-400">{totalActive} active alerts requiring attention</p>
       </div>
 
       {/* Summary cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {[
-          { label: 'Critical', count: summary.CRITICAL || 0, color: 'bg-red-50 border-red-200', textColor: 'text-red-700', dotColor: 'bg-red-500' },
-          { label: 'High', count: summary.HIGH || 0, color: 'bg-orange-50 border-orange-200', textColor: 'text-orange-700', dotColor: 'bg-orange-500' },
-          { label: 'Medium', count: summary.MEDIUM || 0, color: 'bg-amber-50 border-amber-200', textColor: 'text-amber-700', dotColor: 'bg-amber-500' },
-          { label: 'Low', count: summary.LOW || 0, color: 'bg-green-50 border-green-200', textColor: 'text-green-700', dotColor: 'bg-green-500' },
+          { label: 'Critical', count: summary.CRITICAL || 0, color: 'bg-red-500/10 border-red-500/30', textColor: 'text-red-400', dotColor: 'bg-red-500' },
+          { label: 'High', count: summary.HIGH || 0, color: 'bg-orange-500/10 border-orange-500/30', textColor: 'text-orange-400', dotColor: 'bg-orange-500' },
+          { label: 'Medium', count: summary.MEDIUM || 0, color: 'bg-amber-500/10 border-amber-500/30', textColor: 'text-amber-400', dotColor: 'bg-amber-500' },
+          { label: 'Low', count: summary.LOW || 0, color: 'bg-green-500/10 border-green-500/30', textColor: 'text-green-400', dotColor: 'bg-green-500' },
         ].map(({ label, count, color, textColor, dotColor }) => (
           <div key={label} className={`p-4 rounded-xl border ${color} flex items-center gap-3`}>
             <div className={`w-3 h-3 rounded-full ${dotColor} ${label === 'Critical' && count > 0 ? 'animate-pulse' : ''}`} />
             <div>
               <div className={`text-2xl font-bold ${textColor}`}>{count}</div>
-              <div className="text-xs text-slate-500">{label} Alerts</div>
+              <div className="text-xs text-slate-400">{label} Alerts</div>
             </div>
           </div>
         ))}
@@ -127,12 +127,12 @@ export default function AlertsPage() {
               }`} />
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <span className="text-xs font-bold text-slate-600">{alert.project_id}</span>
+                  <span className="text-xs font-bold text-slate-300">{alert.project_id}</span>
                   <RiskBadge level={alert.severity as any} />
                   <StatusDot status={alert.status} />
                   <span className="text-xs text-slate-400">{alert.status.replace(/_/g, ' ')}</span>
                 </div>
-                <p className="text-sm text-slate-700 mt-1">{alert.message}</p>
+                <p className="text-sm text-slate-300 mt-1">{alert.message}</p>
                 <div className="flex items-center gap-1 mt-1 text-xs text-slate-400">
                   <Clock className="w-3 h-3" />
                   {new Date(alert.created_at).toLocaleDateString()}
@@ -144,7 +144,7 @@ export default function AlertsPage() {
               <div className="flex gap-1.5 flex-shrink-0 flex-wrap justify-end">
                 <button
                   onClick={() => navigate(`/projects/${alert.project_id}`)}
-                  className="text-xs px-2.5 py-1 border border-blue-200 text-blue-600 rounded-md hover:bg-blue-50 flex items-center gap-1"
+                  className="text-xs px-2.5 py-1 border border-blue-500/30 text-blue-400 rounded-md hover:bg-blue-500/10 flex items-center gap-1"
                 >
                   Investigate <ArrowRight className="w-3 h-3" />
                 </button>
@@ -152,7 +152,7 @@ export default function AlertsPage() {
                   <button
                     onClick={() => updateStatus(alert, 'UNDER_REVIEW')}
                     disabled={updatingId === alert.id}
-                    className="text-xs px-2.5 py-1 border border-slate-300 text-slate-600 rounded-md hover:bg-slate-50 disabled:opacity-50"
+                    className="text-xs px-2.5 py-1 border border-slate-600 text-slate-300 rounded-md hover:bg-slate-800 disabled:opacity-50"
                   >
                     Review
                   </button>
@@ -161,7 +161,7 @@ export default function AlertsPage() {
                   <button
                     onClick={() => updateStatus(alert, 'RESOLVED')}
                     disabled={updatingId === alert.id}
-                    className="text-xs px-2.5 py-1 border border-green-300 text-green-600 rounded-md hover:bg-green-50 disabled:opacity-50"
+                    className="text-xs px-2.5 py-1 border border-green-500/30 text-green-400 rounded-md hover:bg-green-500/10 disabled:opacity-50"
                     title="Mark resolved"
                   >
                     <CheckCircle className="w-3.5 h-3.5" />
