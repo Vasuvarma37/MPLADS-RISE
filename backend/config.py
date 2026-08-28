@@ -10,15 +10,6 @@ class Settings(BaseSettings):
     # Database
     database_url: str = "postgresql://mplads_user:mplads_pass@localhost:5432/mplads_rise"
     
-    # ChromaDB
-    chroma_host: str = "localhost"
-    chroma_port: int = 8001
-    chroma_collection: str = "mplads_guidelines"
-    
-    # Gemini
-    gemini_api_key: str = ""
-    gemini_model: str = "gemini-1.5-flash"
-    
     # Security
     secret_key: str = "change-this-in-production-please"
     algorithm: str = "HS256"
