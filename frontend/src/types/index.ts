@@ -26,6 +26,7 @@ export interface Project {
   is_completed: boolean;
   has_photographs?: boolean;
   has_sanction_order?: boolean;
+  risk_level?: RiskLevel | string;
 }
 
 export interface EvidenceSignal {
