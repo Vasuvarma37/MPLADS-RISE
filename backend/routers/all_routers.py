@@ -271,21 +271,34 @@ analytics_router = APIRouter(prefix="/api/analytics", tags=["Analytics"])
 
 @analytics_router.get("/risk-trend")
 def risk_trend(db: Session = Depends(get_db), _: dict = Depends(get_current_user)):
-    """Monthly risk level counts for trend chart."""
-    from datetime import datetime, timedelta
-    months = []
-    now = datetime.now()
-    for i in range(6, 0, -1):
-        month_start = (now.replace(day=1) - timedelta(days=30 * i))
-        month_label = month_start.strftime("%b")
-        months.append({
-            "month": month_label,
-            "low": 120 + i * 10,
-            "medium": 45 + i * 5,
-            "high": 15 + i * 3,
-            "critical": 2 + i,
+    """Monthly risk level counts for trend chart based on real data."""
+    assessments = db.query(RiskAssessment).all()
+    
+    # Group by month label
+    from collections import defaultdict
+    trend_data = defaultdict(lambda: {"low": 0, "medium": 0, "high": 0, "critical": 0})
+    
+    for a in assessments:
+        if a.assessed_at:
+            m_label = a.assessed_at.strftime("%b")
+            level = a.risk_level.name.lower() if a.risk_level else "low"
+            trend_data[m_label][level] += 1
+            
+    # If no data exists, return an empty template for the current month
+    if not trend_data:
+        from datetime import datetime
+        return [{"month": datetime.now().strftime("%b"), "low": 0, "medium": 0, "high": 0, "critical": 0}]
+        
+    result = []
+    for month, counts in trend_data.items():
+        result.append({
+            "month": month,
+            "low": counts["low"],
+            "medium": counts["medium"],
+            "high": counts["high"],
+            "critical": counts["critical"],
         })
-    return months
+    return result
 
 
 @analytics_router.get("/scatter")

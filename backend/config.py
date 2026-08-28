@@ -8,16 +8,16 @@ from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
     # Database
-    database_url: str = "postgresql://mplads_user:mplads_pass@localhost:5432/mplads_rise"
+    database_url: str
     
     # Security
-    secret_key: str = "change-this-in-production-please"
+    secret_key: str
     algorithm: str = "HS256"
     access_token_expire_minutes: int = 480
     
     # App
     app_env: str = "development"
-    frontend_url: str = "http://localhost:3000"
+    frontend_url: str
     rate_limit_ai: int = 10  # requests per minute
 
     model_config = {
