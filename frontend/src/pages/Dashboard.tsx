@@ -161,15 +161,15 @@ End of Report. Risk assessments powered by MPLADS RISE AI Core.
       {/* Page header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
         <div>
-          <h1 className="text-xl font-bold text-slate-900">Executive Overview</h1>
-          <p className="text-sm text-slate-500">
+          <h1 className="text-xl font-bold text-white">Executive Overview</h1>
+          <p className="text-sm text-slate-400">
             MPLADS project risk monitoring · Last updated {lastRefresh.toLocaleTimeString()}
           </p>
         </div>
         <div className="flex gap-2">
           <button
             onClick={fetchData}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs border border-slate-300 rounded-lg hover:bg-slate-50 text-slate-600 font-medium"
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs border border-slate-700 rounded-lg hover:bg-slate-800 text-slate-300 font-medium"
           >
             <RefreshCw className="w-3.5 h-3.5" />
             Refresh
@@ -178,28 +178,28 @@ End of Report. Risk assessments powered by MPLADS RISE AI Core.
             <button 
               onClick={() => setShowExportDropdown(!showExportDropdown)}
               disabled={!summary}
-              className="flex items-center gap-1.5 px-3 py-1.5 text-xs bg-blue-900 text-white rounded-lg hover:bg-blue-800 disabled:opacity-50 transition-all font-medium"
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs bg-blue-600 text-white rounded-lg hover:bg-blue-500 disabled:opacity-50 transition-all font-medium"
             >
               <Download className="w-3.5 h-3.5" />
               Export Brief
             </button>
             {showExportDropdown && (
-              <div className="absolute right-0 mt-1.5 w-48 bg-white border border-slate-200 rounded-lg shadow-lg py-1 z-50 animate-fadeIn">
+              <div className="absolute right-0 mt-1.5 w-48 bg-slate-800 border border-slate-700 rounded-lg shadow-lg py-1 z-50 animate-fadeIn">
                 <button
                   onClick={() => { exportToExcel(); setShowExportDropdown(false); }}
-                  className="w-full text-left px-4 py-2 text-xs text-slate-700 hover:bg-slate-50 flex items-center gap-2"
+                  className="w-full text-left px-4 py-2 text-xs text-slate-200 hover:bg-slate-700 flex items-center gap-2"
                 >
                   📊 Export to Excel (.csv)
                 </button>
                 <button
                   onClick={() => { exportToPdf(); setShowExportDropdown(false); }}
-                  className="w-full text-left px-4 py-2 text-xs text-slate-700 hover:bg-slate-50 flex items-center gap-2"
+                  className="w-full text-left px-4 py-2 text-xs text-slate-200 hover:bg-slate-700 flex items-center gap-2"
                 >
                   📄 Export to PDF (Print)
                 </button>
                 <button
                   onClick={() => { handleExport(); setShowExportDropdown(false); }}
-                  className="w-full text-left px-4 py-2 text-xs text-slate-700 hover:bg-slate-50 flex items-center gap-2"
+                  className="w-full text-left px-4 py-2 text-xs text-slate-200 hover:bg-slate-700 flex items-center gap-2"
                 >
                   📝 Export to Text (.txt)
                 </button>
@@ -243,7 +243,7 @@ End of Report. Risk assessments powered by MPLADS RISE AI Core.
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
         {/* Risk Donut */}
         <Card className="p-5">
-          <h3 className="font-semibold text-slate-800 mb-4 text-sm">Risk Distribution</h3>
+          <h3 className="font-semibold text-white mb-4 text-sm">Risk Distribution</h3>
           {loading ? <Skeleton className="h-52" /> : (
             <ResponsiveContainer width="100%" height={200}>
               <PieChart>
@@ -265,7 +265,7 @@ End of Report. Risk assessments powered by MPLADS RISE AI Core.
 
         {/* Risk Trend */}
         <Card className="p-5 lg:col-span-2">
-          <h3 className="font-semibold text-slate-800 mb-4 text-sm">Project Risk Trend (6 Months)</h3>
+          <h3 className="font-semibold text-white mb-4 text-sm">Project Risk Trend (6 Months)</h3>
           {loading ? <Skeleton className="h-52" /> : (
             <ResponsiveContainer width="100%" height={200}>
               <AreaChart data={trendData} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
@@ -280,11 +280,11 @@ End of Report. Risk assessments powered by MPLADS RISE AI Core.
                     </linearGradient>
                   ))}
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#334155" />
                 <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fill: '#94a3b8', fontSize: 11 }} />
                 <YAxis axisLine={false} tickLine={false} tick={{ fill: '#94a3b8', fontSize: 11 }} />
-                <Tooltip contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 20px rgba(0,0,0,0.1)' }} />
-                <Legend verticalAlign="top" height={30} wrapperStyle={{ fontSize: '11px' }} />
+                <Tooltip contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 20px rgba(0,0,0,0.3)', backgroundColor: '#1e293b', color: '#f8fafc' }} />
+                <Legend verticalAlign="top" height={30} wrapperStyle={{ fontSize: '11px', color: '#cbd5e1' }} />
                 {[
                   { key: 'critical', color: '#dc2626' }, { key: 'high', color: '#ea580c' },
                   { key: 'medium', color: '#d97706' }, { key: 'low', color: '#16a34a' },
@@ -304,17 +304,17 @@ End of Report. Risk assessments powered by MPLADS RISE AI Core.
         <Card className="p-4 border-l-4 border-l-red-500">
           <div className="flex items-center gap-2 mb-1">
             <CreditCard className="w-4 h-4 text-red-500" />
-            <span className="text-xs font-semibold text-slate-700 uppercase tracking-wide">Payment Anomalies</span>
+            <span className="text-xs font-semibold text-slate-300 uppercase tracking-wide">Payment Anomalies</span>
           </div>
-          <div className="text-2xl font-bold text-red-600">{summary?.risk_distribution.CRITICAL || 0}</div>
+          <div className="text-2xl font-bold text-red-500">{summary?.risk_distribution.CRITICAL || 0}</div>
           <div className="text-xs text-slate-400 mt-1">Financial &gt; Physical by &gt;20%</div>
         </Card>
         <Card className="p-4 border-l-4 border-l-orange-500">
           <div className="flex items-center gap-2 mb-1">
             <Copy className="w-4 h-4 text-orange-500" />
-            <span className="text-xs font-semibold text-slate-700 uppercase tracking-wide">Duplicate Signals</span>
+            <span className="text-xs font-semibold text-slate-300 uppercase tracking-wide">Duplicate Signals</span>
           </div>
-          <div className="text-2xl font-bold text-orange-600">{summary?.risk_distribution.HIGH || 0}</div>
+          <div className="text-2xl font-bold text-orange-500">{summary?.risk_distribution.HIGH || 0}</div>
           <div className="text-xs text-slate-400 mt-1">AI detected similar works</div>
         </Card>
         <Card
@@ -323,9 +323,9 @@ End of Report. Risk assessments powered by MPLADS RISE AI Core.
         >
           <div className="flex items-center gap-2 mb-1">
             <AlertTriangle className="w-4 h-4 text-amber-500 group-hover:scale-110 transition-transform" />
-            <span className="text-xs font-semibold text-slate-700 uppercase tracking-wide">Delayed Projects</span>
+            <span className="text-xs font-semibold text-slate-300 uppercase tracking-wide">Delayed Projects</span>
           </div>
-          <div className="text-2xl font-bold text-amber-600">{(summary?.risk_distribution.MEDIUM || 0) + 14}</div>
+          <div className="text-2xl font-bold text-amber-500">{(summary?.risk_distribution.MEDIUM || 0) + 14}</div>
           <div className="text-xs text-slate-400 mt-1 flex items-center gap-1">Physical progress &lt; expected</div>
         </Card>
         <Card
@@ -333,28 +333,28 @@ End of Report. Risk assessments powered by MPLADS RISE AI Core.
           onClick={() => navigate('/projects?risk_level=HIGH')}
         >
           <div className="flex items-center gap-2 mb-1">
-            <FolderKanban className="w-4 h-4 text-purple-600 group-hover:scale-110 transition-transform" />
-            <span className="text-xs font-semibold text-slate-700 uppercase tracking-wide">Cost Anomalies</span>
+            <FolderKanban className="w-4 h-4 text-purple-500 group-hover:scale-110 transition-transform" />
+            <span className="text-xs font-semibold text-slate-300 uppercase tracking-wide">Cost Anomalies</span>
           </div>
-          <div className="text-2xl font-bold text-purple-600">{summary?.risk_distribution.HIGH || 0}</div>
+          <div className="text-2xl font-bold text-purple-500">{summary?.risk_distribution.HIGH || 0}</div>
           <div className="text-xs text-slate-400 mt-1 flex items-center gap-1">Expenditure &gt; Sanctioned</div>
         </Card>
       </div>
 
       {/* Top risk projects table */}
       <Card className="overflow-hidden">
-        <div className="flex items-center justify-between p-4 border-b border-slate-100">
-          <h3 className="font-semibold text-slate-800 text-sm">Critical & High Risk Projects</h3>
+        <div className="flex items-center justify-between p-4 border-b border-slate-800">
+          <h3 className="font-semibold text-white text-sm">Critical & High Risk Projects</h3>
           <button
             onClick={() => navigate('/projects')}
-            className="flex items-center gap-1 text-xs text-blue-600 hover:text-blue-800 font-medium"
+            className="flex items-center gap-1 text-xs text-blue-400 hover:text-blue-300 font-medium"
           >
             View All <ArrowRight className="w-3 h-3" />
           </button>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="text-xs text-slate-500 uppercase bg-slate-50 border-b border-slate-100">
+            <thead className="text-xs text-slate-400 uppercase bg-slate-800/50 border-b border-slate-700">
               <tr>
                 <th className="px-4 py-3 text-left font-medium">Project</th>
                 <th className="px-4 py-3 text-left font-medium hidden sm:table-cell">Location</th>
@@ -364,7 +364,7 @@ End of Report. Risk assessments powered by MPLADS RISE AI Core.
                 <th className="px-4 py-3 text-right font-medium">Action</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-50">
+            <tbody className="divide-y divide-slate-800/60">
               {loading ? (
                 Array(4).fill(0).map((_, i) => (
                   <tr key={i}><td colSpan={6} className="px-4 py-3"><Skeleton className="h-8" /></td></tr>
@@ -374,14 +374,14 @@ End of Report. Risk assessments powered by MPLADS RISE AI Core.
               ) : topRisk.map((p) => (
                 <tr key={p.project_id} className="table-row-hover cursor-pointer" onClick={() => navigate(`/projects/${p.project_id}`)}>
                   <td className="px-4 py-3">
-                    <div className="font-medium text-blue-900 text-xs">{p.project_id}</div>
-                    <div className="text-slate-600 text-xs truncate max-w-[200px]">{p.work_name}</div>
+                    <div className="font-medium text-blue-400 text-xs">{p.project_id}</div>
+                    <div className="text-slate-200 text-xs truncate max-w-[200px]">{p.work_name}</div>
                   </td>
-                  <td className="px-4 py-3 text-xs text-slate-600 hidden sm:table-cell">
+                  <td className="px-4 py-3 text-xs text-slate-300 hidden sm:table-cell">
                     {p.district}, {p.state}
                   </td>
                   <td className="px-4 py-3 hidden md:table-cell">
-                    <div className="text-xs text-slate-700">Exp: ₹{p.expenditure_amount_lakh}</div>
+                    <div className="text-xs text-slate-300">Exp: ₹{p.expenditure_amount_lakh}</div>
                     <div className="text-xs text-slate-400">San: ₹{p.sanction_amount_lakh}</div>
                   </td>
                   <td className="px-4 py-3">
@@ -393,7 +393,7 @@ End of Report. Risk assessments powered by MPLADS RISE AI Core.
                   <td className="px-4 py-3 text-right">
                     <button
                       onClick={(e) => { e.stopPropagation(); navigate(`/projects/${p.project_id}`); }}
-                      className="text-xs px-2.5 py-1 border border-slate-300 rounded-md hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700 transition-colors"
+                      className="text-xs px-2.5 py-1 border border-slate-600 rounded-md hover:bg-slate-700 hover:border-slate-500 hover:text-white transition-colors"
                     >
                       Investigate
                     </button>
