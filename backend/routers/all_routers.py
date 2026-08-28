@@ -236,22 +236,25 @@ auth_router = APIRouter(prefix="/api/auth", tags=["Auth"])
 _settings = _get_settings()
 
 
+from models.orm_models import User
+
 @auth_router.post("/login")
-def login(form_data: OAuth2PasswordRequestForm = Depends()):
+def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     """Login and receive JWT token."""
-    # Simple single-admin for now; extend with DB users for production
-    if (form_data.username == _settings.admin_username and
-            form_data.password == _settings.admin_password):
-        token = create_access_token(
-            data={"sub": form_data.username, "role": "admin"}
+    user = db.query(User).filter(User.username == form_data.username).first()
+    
+    if not user or not verify_password(form_data.password, user.hashed_password):
+        raise HTTPException(
+            status_code=401,
+            detail="Incorrect username or password",
+            headers={"WWW-Authenticate": "Bearer"},
         )
-        return {"access_token": token, "token_type": "bearer",
-                "username": form_data.username, "role": "admin"}
-    raise HTTPException(
-        status_code=401,
-        detail="Incorrect username or password",
-        headers={"WWW-Authenticate": "Bearer"},
+        
+    token = create_access_token(
+        data={"sub": user.username, "role": user.role}
     )
+    return {"access_token": token, "token_type": "bearer",
+            "username": user.username, "role": user.role}
 
 
 @auth_router.get("/me")
