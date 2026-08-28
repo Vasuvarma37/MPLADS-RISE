@@ -38,16 +38,6 @@ async def lifespan(app: FastAPI):
     
     db = SessionLocal()
     try:
-        if db.query(User).count() == 0:
-            admin = User(
-                username=settings.admin_username,
-                hashed_password=get_password_hash(settings.admin_password),
-                role="admin",
-            )
-            db.add(admin)
-            db.commit()
-            logger.info("✅ Admin user created")
-        
         # Seed sample projects if DB is empty
         if db.query(Project).count() == 0:
             _seed_sample_data(db)
