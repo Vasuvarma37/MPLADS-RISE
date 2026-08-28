@@ -54,14 +54,7 @@ export const projectsApi = {
   stateAnalytics: () => api.get('/projects/state-analytics'),
   detail: (id: string) => api.get(`/projects/${id}`),
   assessRisk: (id: string) => api.post(`/projects/${id}/assess-risk`),
-  uploadDocument: (id: string, file: File) => {
-    const formData = new FormData();
-    formData.append('file', file);
-    return api.post(`/projects/${id}/documents`, formData, {
-      headers: { 'Content-Type': 'multipart/form-data' }
-    });
-  },
-  getDocuments: (id: string) => api.get(`/projects/${id}/documents`),
+  batchAssess: () => api.post('/projects/batch-assess'),
 };
 
 // ── Alerts ───────────────────────────────────────────────────────────────────
@@ -78,20 +71,3 @@ export const analyticsApi = {
   scatter: () => api.get('/analytics/scatter'),
 };
 
-// ── AI ───────────────────────────────────────────────────────────────────────
-export const aiApi = {
-  ask: (question: string, project_context?: any) =>
-    api.post('/ai/ask', { question, project_context }),
-  knowledge: () => api.get('/ai/knowledge'),
-  upload: (text: string, source: string, category: string) =>
-    api.post('/ai/upload', { text, source, category }),
-  uploadFile: (source: string, category: string, file: File) => {
-    const formData = new FormData();
-    formData.append('source', source);
-    formData.append('category', category);
-    formData.append('file', file);
-    return api.post('/ai/upload-file', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' }
-    });
-  }
-};

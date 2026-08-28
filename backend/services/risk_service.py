@@ -104,8 +104,145 @@ def get_risk_level(score: int) -> str:
     return "LOW"
 
 
+def build_evidence_report(
+    project_data: Dict[str, Any],
+    risk_score: int,
+    risk_level: str,
+    cost_dev: float,
+    delay_prob: float,
+    dup_score: float,
+    anomaly_score: float,
+    rule_flags: list,
+) -> Dict[str, Any]:
+    """
+    Build one unified combined evidence report — the single final output
+    that authorities see, combining all ML signals into structured evidence.
+    """
+    phy = project_data.get("physical_progress_pct", 0)
+    fin = project_data.get("financial_progress_pct", 0)
+    sanction = project_data.get("sanction_amount_lakh", 0)
+    exp = project_data.get("expenditure_amount_lakh", 0)
+    delay = project_data.get("delay_days", 0)
+    gap = fin - phy
+    cost_overrun_pct = round((exp - sanction) / max(sanction, 0.01) * 100, 1)
+
+    # Build detected signals list
+    detected_signals = []
+
+    # 1. Cost anomaly
+    if abs(cost_overrun_pct) > 5:
+        detected_signals.append({
+            "type": "cost_anomaly",
+            "triggered": abs(cost_overrun_pct) > 20,
+            "label": "Cost Anomaly",
+            "actual": f"₹{exp}L",
+            "expected": f"₹{sanction}L",
+            "deviation": f"{'+' if cost_overrun_pct > 0 else ''}{cost_overrun_pct}%",
+            "detail": f"Cost deviation score: {round(abs(cost_dev), 1)}",
+        })
+
+    # 2. Progress anomaly
+    if gap > 10:
+        detected_signals.append({
+            "type": "progress_anomaly",
+            "triggered": gap > 30,
+            "label": "Progress Anomaly",
+            "financial_progress": f"{fin}%",
+            "physical_progress": f"{phy}%",
+            "gap": f"{gap}%",
+            "detail": "Financial progress significantly exceeds physical progress",
+        })
+
+    # 3. Delay anomaly
+    if delay > 30:
+        detected_signals.append({
+            "type": "delay_anomaly",
+            "triggered": delay > 180,
+            "label": "Delay Anomaly",
+            "delay_days": delay,
+            "delay_probability_pct": round(delay_prob * 100, 1),
+            "detail": f"Project overdue by {delay} days. Delay probability: {round(delay_prob * 100, 1)}%",
+        })
+
+    # 4. Payment anomaly
+    payment_flag = any(f.get("rule") in ("PAYMENT_ANOMALY", "FULL_PAYMENT_LOW_PROGRESS") for f in rule_flags)
+    if payment_flag:
+        detected_signals.append({
+            "type": "payment_anomaly",
+            "triggered": True,
+            "label": "Payment Anomaly",
+            "detail": "Unusual payment concentration detected — funds released disproportionately to physical progress",
+        })
+
+    # 5. Duplicate work signal
+    if dup_score > 0.5:
+        detected_signals.append({
+            "type": "duplicate_signal",
+            "triggered": dup_score > 0.75,
+            "label": "Duplicate-Work Signal",
+            "similarity_pct": round(dup_score * 100, 1),
+            "detail": f"Similar nearby work detected: {round(dup_score * 100, 1)}% similarity",
+        })
+
+    # 6. Anomaly model signal (Isolation Forest)
+    if anomaly_score < -0.1:
+        detected_signals.append({
+            "type": "ml_anomaly",
+            "triggered": anomaly_score < -0.2,
+            "label": "ML Anomaly Detection",
+            "anomaly_score": round(anomaly_score, 3),
+            "detail": f"Isolation Forest flagged this project as an outlier (score: {round(anomaly_score, 3)})",
+        })
+
+    # Build "Why Flagged?" reasons
+    why_flagged = []
+    if abs(cost_overrun_pct) > 20:
+        why_flagged.append("Cost significantly exceeds peer projects")
+    if gap > 30:
+        why_flagged.append("Financial progress substantially exceeds physical progress")
+    if delay > 180:
+        why_flagged.append("Completion deadline exceeded")
+    if payment_flag:
+        why_flagged.append("Payment pattern is unusual")
+    if dup_score > 0.75:
+        why_flagged.append("High similarity to other nearby works detected")
+    if anomaly_score < -0.2:
+        why_flagged.append("ML model flagged this project as a statistical outlier")
+    if not why_flagged and risk_score > 25:
+        why_flagged.append("Multiple risk indicators elevated above threshold")
+
+    # Build recommended review actions
+    recommended_actions = []
+    if abs(cost_overrun_pct) > 20:
+        recommended_actions.append("Review expenditure and payment records")
+    if gap > 30:
+        recommended_actions.append("Verify physical progress on site")
+    if dup_score > 0.75:
+        recommended_actions.append("Check similar nearby works for duplication")
+    if delay > 180:
+        recommended_actions.append("Verify completion documents and extension approvals")
+    if payment_flag:
+        recommended_actions.append("Audit payment vouchers and utilization certificates")
+    if not recommended_actions:
+        recommended_actions.append("Schedule routine monitoring inspection")
+    recommended_actions.append("Consider field inspection if risk is CRITICAL")
+
+    return {
+        "risk_score": risk_score,
+        "risk_level": risk_level,
+        "detected_signals": detected_signals,
+        "why_flagged": why_flagged,
+        "recommended_actions": recommended_actions,
+        "signal_count": len([s for s in detected_signals if s.get("triggered")]),
+        "summary": (
+            f"This project has been flagged as {risk_level} risk (score: {risk_score}/100). "
+            f"{len(detected_signals)} anomaly signal(s) detected requiring authority review."
+        ),
+    }
+
+
 def assess_project_risk(project_data: Dict[str, Any], db: Session) -> Dict[str, Any]:
-    """Full ML + rule pipeline for a single project."""
+    """Full ML + rule pipeline for a single project. Returns unified combined output."""
     project_id = project_data.get("project_id")
     description = project_data.get("work_name", "")
 
@@ -113,7 +250,7 @@ def assess_project_risk(project_data: Dict[str, Any], db: Session) -> Dict[str, 
     xgb_result     = predict_risk_score(project_data)
     cost_dev       = predict_cost_deviation(project_data)
     delay_prob     = predict_delay_probability(project_data)
-    dup_score      = compute_duplicate_score(description, project_id)
+    dup_score      = compute_duplicate_score(description, project_id, db)
     anomaly_scores = compute_anomaly_score(project_data)
     anomaly_score  = anomaly_scores["isolation_score"]
     lof_score      = anomaly_scores["lof_score"]
@@ -142,6 +279,18 @@ def assess_project_risk(project_data: Dict[str, Any], db: Session) -> Dict[str, 
     # SHAP explanation
     shap_exp = generate_shap_explanation(project_data, cost_dev, delay_prob)
 
+    # Build the unified combined evidence report (the single final output)
+    evidence_report = build_evidence_report(
+        project_data=project_data,
+        risk_score=risk_score,
+        risk_level=risk_level,
+        cost_dev=cost_dev,
+        delay_prob=delay_prob,
+        dup_score=dup_score,
+        anomaly_score=anomaly_score,
+        rule_flags=rule_flags,
+    )
+
     result = {
         "project_id": project_id,
         "risk_score": risk_score,
@@ -154,6 +303,7 @@ def assess_project_risk(project_data: Dict[str, Any], db: Session) -> Dict[str, 
         "lof_score": lof_score,
         "rule_flags": rule_flags,
         "shap_explanation": shap_exp,
+        "evidence_report": evidence_report,  # <- Unified combined final output
     }
 
     # Persist to DB

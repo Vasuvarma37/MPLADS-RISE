@@ -1,5 +1,6 @@
 /**
  * MPLADS RISE — App Router
+ * SIH26102: AI-powered MPLADS monitoring platform
  */
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
@@ -11,19 +12,16 @@ import ProjectExplorer from './pages/ProjectExplorer';
 import RiskInvestigation from './pages/RiskInvestigation';
 import Alerts from './pages/Alerts';
 import Analytics from './pages/Analytics';
-import KnowledgeBase from './pages/KnowledgeBase';
-import ConstituencyMap from './pages/ConstituencyMap';
-import MPLeaderboard from './pages/MPLeaderboard';
 
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, isLoading } = useAuth();
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-100">
+      <div className="min-h-screen flex items-center justify-center bg-slate-950">
         <div className="flex flex-col items-center gap-3">
-          <div className="w-10 h-10 border-4 border-blue-900 border-t-transparent rounded-full animate-spin" />
-          <p className="text-sm text-slate-500">Loading MPLADS RISE...</p>
+          <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
+          <p className="text-sm text-slate-400">Loading MPLADS RISE...</p>
         </div>
       </div>
     );
@@ -43,10 +41,6 @@ export default function App() {
           <Route path="/projects/:id" element={<ProtectedRoute><RiskInvestigation /></ProtectedRoute>} />
           <Route path="/alerts" element={<ProtectedRoute><Alerts /></ProtectedRoute>} />
           <Route path="/analytics" element={<ProtectedRoute><Analytics /></ProtectedRoute>} />
-          <Route path="/knowledge" element={<ProtectedRoute><KnowledgeBase /></ProtectedRoute>} />
-          <Route path="/map" element={<ProtectedRoute><ConstituencyMap /></ProtectedRoute>} />
-          <Route path="/mps" element={<ProtectedRoute><MPLeaderboard /></ProtectedRoute>} />
-
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </BrowserRouter>

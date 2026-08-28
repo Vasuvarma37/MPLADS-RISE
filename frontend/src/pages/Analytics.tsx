@@ -41,13 +41,13 @@ export default function Analytics() {
   return (
     <div className="space-y-5 fade-in">
       <div>
-        <h1 className="text-xl font-bold text-slate-900">Analytics</h1>
-        <p className="text-sm text-slate-500">State-wise trends, financial utilization, and anomaly scatter</p>
+        <h1 className="text-xl font-bold text-slate-100">Analytics</h1>
+        <p className="text-sm text-slate-400">State-wise trends, financial utilization, and anomaly scatter</p>
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-5">
-        <Card className="p-5">
-          <h3 className="font-semibold text-slate-800 text-sm mb-4">Fund Utilization by State (₹ Lakhs)</h3>
+        <Card className="p-5 bg-slate-900 border-slate-800">
+          <h3 className="font-semibold text-slate-200 text-sm mb-4">Fund Utilization by State (₹ Lakhs)</h3>
           {loading ? <Skeleton className="h-64" /> : (
             <ResponsiveContainer width="100%" height={280}>
               <BarChart data={topByAmount} layout="vertical" margin={{ left: 0, right: 10 }}>
@@ -63,8 +63,8 @@ export default function Analytics() {
           )}
         </Card>
 
-        <Card className="p-5">
-          <h3 className="font-semibold text-slate-800 text-sm mb-4">Average Delay by State (Days)</h3>
+        <Card className="p-5 bg-slate-900 border-slate-800">
+          <h3 className="font-semibold text-slate-200 text-sm mb-4">Average Delay by State (Days)</h3>
           {loading ? <Skeleton className="h-64" /> : (
             <ResponsiveContainer width="100%" height={280}>
               <BarChart data={topByDelay} layout="vertical" margin={{ left: 0, right: 10 }}>

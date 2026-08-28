@@ -1,5 +1,6 @@
 """
 MPLADS RISE — SQLAlchemy ORM Models
+SIH26102: AI-powered anomaly detection and risk monitoring for MPLADS
 """
 from sqlalchemy import (
     Column, Integer, String, Float, Boolean, Date, DateTime,
@@ -27,6 +28,7 @@ class AlertStatus(str, enum.Enum):
 
 
 class Project(Base):
+    """Core MPLADS work/project record — the primary unit of analysis."""
     __tablename__ = "projects"
 
     id = Column(Integer, primary_key=True, index=True)
@@ -57,54 +59,50 @@ class Project(Base):
     alerts = relationship("Alert", back_populates="project")
     payments = relationship("Payment", back_populates="project")
     progress_logs = relationship("ProgressLog", back_populates="project")
-    documents = relationship("ProjectDocument", back_populates="project")
-
-
-class ProjectDocument(Base):
-    __tablename__ = "project_documents"
-
-    id = Column(Integer, primary_key=True, index=True)
-    project_id = Column(String(50), ForeignKey("projects.project_id"), index=True)
-    file_name = Column(String(500), nullable=False)
-    file_url = Column(String(1000), nullable=False)
-    file_type = Column(String(50)) # e.g., 'IMAGE', 'PDF'
-    uploaded_at = Column(DateTime, server_default=func.now())
-    uploaded_by = Column(String(100)) # e.g., MP/MLA ID
-
-    project = relationship("Project", back_populates="documents")
 
 
 class RiskAssessment(Base):
+    """
+    Unified AI risk output per project.
+    Combines ML models (XGBoost, Isolation Forest) + rule engine
+    into a single risk score and structured evidence report.
+    """
     __tablename__ = "risk_assessments"
 
     id = Column(Integer, primary_key=True, index=True)
     project_id = Column(String(50), ForeignKey("projects.project_id"), index=True)
-    risk_score = Column(Integer, default=0)
-    risk_level = Column(SAEnum(RiskLevel), default=RiskLevel.LOW)
-    primary_risk = Column(String(200))
-    cost_deviation_score = Column(Float, default=0.0)
-    delay_probability = Column(Float, default=0.0)
-    duplicate_similarity_score = Column(Float, default=0.0)
-    anomaly_score = Column(Float, default=0.0)
-    lof_score = Column(Float, default=1.0)
-    rule_flags = Column(JSON, default=list)
-    shap_explanation = Column(JSON, default=dict)
+    risk_score = Column(Integer, default=0)               # 0–100
+    risk_level = Column(SAEnum(RiskLevel), default=RiskLevel.LOW)  # LOW/MEDIUM/HIGH/CRITICAL
+    primary_risk = Column(String(200))                    # Dominant anomaly type
+    cost_deviation_score = Column(Float, default=0.0)     # % over/under budget
+    delay_probability = Column(Float, default=0.0)        # 0.0–1.0 from delay model
+    duplicate_similarity_score = Column(Float, default=0.0)  # 0.0–1.0 duplicate signal
+    anomaly_score = Column(Float, default=0.0)            # Isolation Forest score
+    lof_score = Column(Float, default=1.0)                # LOF score
+    rule_flags = Column(JSON, default=list)               # Triggered rule-engine flags
+    shap_explanation = Column(JSON, default=dict)         # Feature importance breakdown
+    # Unified evidence report — the complete final output for authorities
+    evidence_report = Column(JSON, default=dict)
     assessed_at = Column(DateTime, server_default=func.now())
 
     project = relationship("Project", back_populates="risk_assessments")
 
 
 class Alert(Base):
+    """
+    Auto-generated early-warning alert for authorities.
+    Created by the risk engine when anomalies are detected.
+    """
     __tablename__ = "alerts"
 
     id = Column(Integer, primary_key=True, index=True)
     project_id = Column(String(50), ForeignKey("projects.project_id"), index=True)
-    alert_type = Column(String(100), nullable=False)
+    alert_type = Column(String(100), nullable=False)      # e.g. COST_OVERRUN, PAYMENT_ANOMALY
     severity = Column(SAEnum(RiskLevel), nullable=False)
     message = Column(Text, nullable=False)
     detail = Column(JSON, default=dict)
     status = Column(SAEnum(AlertStatus), default=AlertStatus.NEW)
-    assigned_to = Column(String(200), nullable=True)
+    assigned_to = Column(String(200), nullable=True)      # Authority assigned to investigate
     created_at = Column(DateTime, server_default=func.now())
     updated_at = Column(DateTime, onupdate=func.now())
 
@@ -112,6 +110,7 @@ class Alert(Base):
 
 
 class Payment(Base):
+    """Payment records for a project — analysed for concentration anomalies."""
     __tablename__ = "payments"
 
     id = Column(Integer, primary_key=True, index=True)
@@ -131,6 +130,7 @@ class Payment(Base):
 
 
 class ProgressLog(Base):
+    """Monthly progress snapshots — used for trend analysis and delay detection."""
     __tablename__ = "progress_logs"
 
     id = Column(Integer, primary_key=True, index=True)
@@ -146,11 +146,12 @@ class ProgressLog(Base):
 
 
 class User(Base):
+    """Platform user — authority (MP / District / State / Ministry)."""
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String(100), unique=True, index=True)
     hashed_password = Column(String(200))
-    role = Column(String(50), default="viewer")
+    role = Column(String(50), default="viewer")   # admin / viewer / district / state
     is_active = Column(Boolean, default=True)
     created_at = Column(DateTime, server_default=func.now())

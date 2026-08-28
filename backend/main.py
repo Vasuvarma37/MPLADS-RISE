@@ -4,8 +4,6 @@ MPLADS RISE — FastAPI Application Entry Point
 import logging
 import os
 from contextlib import asynccontextmanager
-from fastapi.staticfiles import StaticFiles
-
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
@@ -13,7 +11,7 @@ from fastapi.middleware.gzip import GZipMiddleware
 from config import get_settings
 from database import engine, Base
 from routers.all_routers import (
-    projects_router, alerts_router, ai_router, auth_router, analytics_router
+    projects_router, alerts_router, auth_router, analytics_router
 )
 
 logging.basicConfig(
@@ -221,17 +219,10 @@ app.add_middleware(
 
 app.add_middleware(GZipMiddleware, minimum_size=1000)
 
-# Mount uploads directory to serve uploaded files
-UPLOAD_DIR = os.path.join(os.path.dirname(__file__), "uploads")
-if not os.path.exists(UPLOAD_DIR):
-    os.makedirs(UPLOAD_DIR)
-app.mount("/uploads", StaticFiles(directory=UPLOAD_DIR), name="uploads")
-
 # Include routers
 app.include_router(auth_router)
 app.include_router(projects_router)
 app.include_router(alerts_router)
-app.include_router(ai_router)
 app.include_router(analytics_router)
 
 

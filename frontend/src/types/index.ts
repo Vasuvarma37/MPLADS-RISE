@@ -28,6 +28,38 @@ export interface Project {
   has_sanction_order?: boolean;
 }
 
+export interface EvidenceSignal {
+  type: string;
+  triggered: boolean;
+  label: string;
+  detail: string;
+  // cost anomaly
+  actual?: string;
+  expected?: string;
+  deviation?: string;
+  // progress anomaly
+  financial_progress?: string;
+  physical_progress?: string;
+  gap?: string;
+  // delay anomaly
+  delay_days?: number;
+  delay_probability_pct?: number;
+  // duplicate signal
+  similarity_pct?: number;
+  // ml anomaly
+  anomaly_score?: number;
+}
+
+export interface EvidenceReport {
+  risk_score: number;
+  risk_level: string;
+  detected_signals: EvidenceSignal[];
+  why_flagged: string[];
+  recommended_actions: string[];
+  signal_count: number;
+  summary: string;
+}
+
 export interface RiskAssessment {
   id?: number;
   project_id: string;
@@ -41,6 +73,7 @@ export interface RiskAssessment {
   lof_score?: number;
   rule_flags?: RuleFlag[];
   shap_explanation?: ShapEntry[];
+  evidence_report?: EvidenceReport | string;
   assessed_at?: string;
 }
 
@@ -55,6 +88,7 @@ export interface ShapEntry {
   value: number;
   direction: 'positive' | 'negative';
 }
+
 
 export interface Alert {
   id: number;
@@ -89,12 +123,6 @@ export interface StateAnalytics {
   total_sanctioned_lakh: number;
   total_expenditure_lakh: number;
   avg_delay_days: number;
-}
-
-export interface AIResponse {
-  answer: string;
-  sources: string[];
-  context_used: number;
 }
 
 export interface User {

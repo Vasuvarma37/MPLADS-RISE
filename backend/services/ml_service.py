@@ -7,6 +7,7 @@ import logging
 import numpy as np
 import pickle
 from typing import Dict, Any
+from sqlalchemy.orm import Session
 
 logger = logging.getLogger(__name__)
 
@@ -152,14 +153,32 @@ def compute_anomaly_score(project: Dict[str, Any]) -> Dict[str, float]:
         return {"isolation_score": round(-gap, 4), "lof_score": round(1.0 + gap, 4)}
 
 
-def compute_duplicate_score(description: str, project_id: str) -> float:
-    """Rule-based duplicate detection (Gemini handles semantic; this is fast heuristic)."""
-    if not description:
+def compute_duplicate_score(description: str, project_id: str, db: Session = None) -> float:
+    """TF-IDF cosine similarity duplicate detection."""
+    if not description or not db:
         return 0.0
-    # Simple word-overlap heuristic — returns 0.1–0.3 for normal, flag via Gemini later
-    import random
-    random.seed(hash(project_id) % 9999)
-    return round(random.uniform(0.05, 0.25), 3)
+    
+    from models.orm_models import Project
+    from sklearn.feature_extraction.text import TfidfVectorizer
+    from sklearn.metrics.pairwise import cosine_similarity
+    
+    # Get other projects
+    projects = db.query(Project).filter(Project.project_id != project_id).all()
+    if not projects:
+        return 0.0
+        
+    documents = [description] + [p.work_name for p in projects if p.work_name]
+    if len(documents) < 2:
+        return 0.0
+        
+    try:
+        vectorizer = TfidfVectorizer(stop_words='english')
+        tfidf_matrix = vectorizer.fit_transform(documents)
+        cosine_sim = cosine_similarity(tfidf_matrix[0:1], tfidf_matrix[1:])
+        return round(float(cosine_sim.max()), 3)
+    except Exception as e:
+        logger.error(f"Duplicate detection error: {e}")
+        return 0.0
 
 
 def generate_shap_explanation(project: Dict[str, Any], cost_pred: float, delay_prob: float) -> list:

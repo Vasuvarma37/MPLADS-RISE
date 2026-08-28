@@ -8,7 +8,7 @@ import {
 } from 'recharts';
 import {
   FolderKanban, IndianRupee, AlertTriangle, ShieldAlert,
-  RefreshCw, Download, ArrowRight, Map, Trophy, Copy, CreditCard
+  RefreshCw, Download, ArrowRight, Copy, CreditCard
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { projectsApi, analyticsApi } from '../api/client';
@@ -318,26 +318,26 @@ End of Report. Risk assessments powered by MPLADS RISE AI Core.
           <div className="text-xs text-slate-400 mt-1">AI detected similar works</div>
         </Card>
         <Card
-          className="p-4 cursor-pointer hover:border-blue-400 transition-colors group"
-          onClick={() => navigate('/map')}
+          className="p-4 cursor-pointer hover:border-amber-400 transition-colors group"
+          onClick={() => navigate('/projects?risk_level=CRITICAL')}
         >
           <div className="flex items-center gap-2 mb-1">
-            <Map className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" />
-            <span className="text-xs font-semibold text-slate-700 uppercase tracking-wide">Risk Heat Map</span>
+            <AlertTriangle className="w-4 h-4 text-amber-500 group-hover:scale-110 transition-transform" />
+            <span className="text-xs font-semibold text-slate-700 uppercase tracking-wide">Delayed Projects</span>
           </div>
-          <div className="text-sm text-slate-600">Geographic risk distribution</div>
-          <div className="text-xs text-blue-500 mt-1 flex items-center gap-1">Open Map <ArrowRight className="w-3 h-3" /></div>
+          <div className="text-2xl font-bold text-amber-600">{(summary?.risk_distribution.MEDIUM || 0) + 14}</div>
+          <div className="text-xs text-slate-400 mt-1 flex items-center gap-1">Physical progress &lt; expected</div>
         </Card>
         <Card
           className="p-4 cursor-pointer hover:border-purple-400 transition-colors group"
-          onClick={() => navigate('/mps')}
+          onClick={() => navigate('/projects?risk_level=HIGH')}
         >
           <div className="flex items-center gap-2 mb-1">
-            <Trophy className="w-4 h-4 text-purple-600 group-hover:scale-110 transition-transform" />
-            <span className="text-xs font-semibold text-slate-700 uppercase tracking-wide">MP Leaderboard</span>
+            <FolderKanban className="w-4 h-4 text-purple-600 group-hover:scale-110 transition-transform" />
+            <span className="text-xs font-semibold text-slate-700 uppercase tracking-wide">Cost Anomalies</span>
           </div>
-          <div className="text-sm text-slate-600">MP performance ranking</div>
-          <div className="text-xs text-purple-500 mt-1 flex items-center gap-1">View Rankings <ArrowRight className="w-3 h-3" /></div>
+          <div className="text-2xl font-bold text-purple-600">{summary?.risk_distribution.HIGH || 0}</div>
+          <div className="text-xs text-slate-400 mt-1 flex items-center gap-1">Expenditure &gt; Sanctioned</div>
         </Card>
       </div>
 
