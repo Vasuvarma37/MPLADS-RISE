@@ -12,6 +12,7 @@ export default function LoginPage() {
   const [showPass, setShowPass] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showColdStart, setShowColdStart] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
 
@@ -19,10 +20,19 @@ export default function LoginPage() {
     e.preventDefault();
     setError('');
     setLoading(true);
+    setShowColdStart(false);
+    
+    // Set timer for cold start warning
+    const coldStartTimer = setTimeout(() => {
+      setShowColdStart(true);
+    }, 3000);
+    
     try {
       await login(username, password);
+      clearTimeout(coldStartTimer);
       navigate('/');
     } catch (err: any) {
+      clearTimeout(coldStartTimer);
       setError(err.response?.data?.detail || 'Invalid credentials. Please try again.');
     } finally {
       setLoading(false);
@@ -109,7 +119,7 @@ export default function LoginPage() {
               {loading ? (
                 <span className="flex items-center justify-center gap-2">
                   <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  Authenticating...
+                  {showColdStart ? 'Waking up server (may take ~50s on free tier)...' : 'Authenticating...'}
                 </span>
               ) : 'Sign In Securely'}
             </button>

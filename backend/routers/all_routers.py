@@ -11,7 +11,7 @@ from database import get_db
 from security import get_current_user
 from services import project_service, risk_service, alert_service
 from models.orm_models import Project
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 class ProjectCreate(BaseModel):
     project_id: str
@@ -20,10 +20,10 @@ class ProjectCreate(BaseModel):
     state: str
     district: str
     implementing_agency: str
-    sanction_amount_lakh: float
-    expenditure_amount_lakh: float
-    physical_progress_pct: int
-    financial_progress_pct: int
+    sanction_amount_lakh: float = Field(..., gt=0, description="Sanction amount must be greater than 0")
+    expenditure_amount_lakh: float = Field(..., ge=0, description="Expenditure amount must be non-negative")
+    physical_progress_pct: int = Field(..., ge=0, le=100, description="Progress must be between 0 and 100")
+    financial_progress_pct: int = Field(..., ge=0, le=100, description="Progress must be between 0 and 100")
 
 projects_router = APIRouter(prefix="/api/projects", tags=["Projects"])
 
@@ -90,8 +90,43 @@ def create_project(data: ProjectCreate, db: Session = Depends(get_db), _: dict =
         "allocated_amount_lakh": new_project.sanction_amount_lakh,
     }
     risk_result = risk_service.assess_project_risk(project_dict, db)
-    
     return {"message": "Project created successfully", "project_id": new_project.project_id, "risk": risk_result}
+
+
+@projects_router.post("/bulk")
+def create_projects_bulk(data_list: list[ProjectCreate], db: Session = Depends(get_db), _: dict = Depends(get_current_user)):
+    """Bulk import projects."""
+    existing_ids = {p.project_id for p in db.query(Project.project_id).filter(
+        Project.project_id.in_([d.project_id for d in data_list])).all()}
+        
+    new_projects = []
+    for data in data_list:
+        if data.project_id in existing_ids:
+            continue
+            
+        new_project = Project(
+            project_id=data.project_id,
+            work_name=data.work_name,
+            work_type=data.work_type,
+            state=data.state,
+            district=data.district,
+            implementing_agency=data.implementing_agency,
+            sanction_amount_lakh=data.sanction_amount_lakh,
+            expenditure_amount_lakh=data.expenditure_amount_lakh,
+            physical_progress_pct=data.physical_progress_pct,
+            financial_progress_pct=data.financial_progress_pct,
+            has_photographs=False,
+            has_sanction_order=False,
+            is_completed=False,
+            delay_days=0
+        )
+        new_projects.append(new_project)
+        
+    if new_projects:
+        db.add_all(new_projects)
+        db.commit()
+        
+    return {"message": f"{len(new_projects)} projects imported successfully, {len(data_list) - len(new_projects)} skipped."}
 
 
 @projects_router.get("/summary")

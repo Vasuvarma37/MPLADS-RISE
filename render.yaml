@@ -16,6 +16,8 @@ services:
           property: connectionString
       - key: GEMINI_API_KEY
         sync: false  # Set manually in Render dashboard
+      - key: ADMIN_PASSWORD
+        sync: false  # Must be set manually in dashboard to override the default
       - key: SECRET_KEY
         generateValue: true
       - key: CHROMA_HOST

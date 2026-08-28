@@ -24,7 +24,7 @@ class Settings(BaseSettings):
     algorithm: str = "HS256"
     access_token_expire_minutes: int = 480
     admin_username: str = "admin"
-    admin_password: str = "rise@mplads2026"
+    admin_password: str
     
     # App
     app_env: str = "development"
