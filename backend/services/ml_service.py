@@ -202,6 +202,10 @@ def generate_shap_explanation(project: Dict[str, Any], cost_pred: float, delay_p
     bundle = _load("risk_scorer")
     
     try:
+        # On Render's 512MB Free Tier, SHAP imports Numba which does JIT compilation and causes massive memory spikes (OOM Kill).
+        # We force an exception here to automatically use the lightweight heuristic fallback below instead.
+        raise MemoryError("Skipping heavy SHAP explainer on free tier")
+        
         if bundle:
             import shap
             import pandas as pd
