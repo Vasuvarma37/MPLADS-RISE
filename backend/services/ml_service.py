@@ -20,9 +20,13 @@ def _load(name: str):
     if name not in _cache:
         path = os.path.join(MODEL_DIR, f"{name}.pkl")
         if os.path.exists(path):
-            with open(path, 'rb') as f:
-                _cache[name] = pickle.load(f)
-            logger.info(f"Loaded model bundle: {name}")
+            try:
+                with open(path, 'rb') as f:
+                    _cache[name] = pickle.load(f)
+                logger.info(f"Loaded model bundle: {name}")
+            except Exception as e:
+                logger.error(f"Failed to load model {name}: {e} — will use fallback")
+                _cache[name] = None
         else:
             logger.warning(f"Model not found: {path} — will use fallback")
             _cache[name] = None
