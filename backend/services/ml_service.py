@@ -175,29 +175,9 @@ def compute_duplicate_score(description: str, project_id: str, db: Session = Non
         return 0.0
     
     try:
-        import faiss
-        from sentence_transformers import SentenceTransformer
-        
-        # Lazy load model and index
-        if "embedder" not in _cache:
-            _cache["embedder"] = SentenceTransformer('all-MiniLM-L6-v2')
-            _cache["faiss_index"] = faiss.read_index(os.path.join(MODEL_DIR, "duplicate_index.faiss"))
-            
-        embedder = _cache["embedder"]
-        index = _cache["faiss_index"]
-        
-        # Create embedding for the new project
-        emb = embedder.encode([description])
-        
-        # Since FAISS typically uses L2 or Inner Product, if the index is Inner Product on normalized vectors, it's cosine sim.
-        # We query the index for the top 5 closest matches
-        distances, indices = index.search(emb, 5)
-        
-        # Return the highest similarity score (if the index returns distances instead of similarities, this needs handling,
-        # but typically for cosine similarity, higher is better and max is 1.0)
-        # We assume distances[0][1] is the closest MATCH that isn't itself (since itself might not be in the index yet)
-        best_score = float(distances[0][0])
-        return round(min(1.0, max(0.0, best_score)), 3)
+        # On Render's 512MB Free Tier, loading SentenceTransformer causes an Out-Of-Memory crash (OOM Kill).
+        # We force an exception here to automatically use the lightweight TF-IDF fallback below instead.
+        raise MemoryError("Skipping heavy SentenceTransformer on free tier")
         
     except Exception as e:
         logger.error(f"Duplicate detection error: {e}")
