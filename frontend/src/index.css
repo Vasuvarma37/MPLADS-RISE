@@ -1,0 +1,104 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import "tailwindcss";
+
+:root {
+  --brand-primary: #1a3a6b;
+  --brand-accent: #2563eb;
+  --brand-light: #dbeafe;
+  --risk-critical: #dc2626;
+  --risk-high: #ea580c;
+  --risk-medium: #d97706;
+  --risk-low: #16a34a;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: #f1f5f9;
+  color: #1e293b;
+  margin: 0;
+  padding: 0;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #f1f5f9; }
+::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #64748b; }
+
+/* Smooth animations */
+.fade-in { animation: fadeIn 0.3s ease-in-out; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+.slide-in { animation: slideIn 0.4s ease-out; }
+@keyframes slideIn { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
+
+/* Risk badge animations */
+.risk-pulse-critical { animation: riskPulse 2s ease-in-out infinite; }
+@keyframes riskPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4); }
+  50% { box-shadow: 0 0 0 8px rgba(220, 38, 38, 0); }
+}
+
+/* Card hover effect */
+.card-hover {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px -5px rgba(0,0,0,0.12);
+}
+
+/* Government header gradient */
+.gov-header {
+  background: linear-gradient(135deg, #1a3a6b 0%, #1e40af 50%, #1d4ed8 100%);
+}
+
+/* Sidebar active item */
+.nav-item-active {
+  background: rgba(37, 99, 235, 0.15);
+  border-right: 3px solid #2563eb;
+  color: #1d4ed8;
+}
+
+/* Progress bar animation */
+.progress-fill {
+  transition: width 0.8s ease-in-out;
+}
+
+/* AI chat bubble */
+.chat-bubble-ai {
+  background: linear-gradient(135deg, #eff6ff, #dbeafe);
+  border-left: 3px solid #2563eb;
+}
+.chat-bubble-user {
+  background: linear-gradient(135deg, #1a3a6b, #1e40af);
+  color: white;
+}
+
+/* Table row hover */
+.table-row-hover:hover { background-color: #f8fafc; }
+
+/* Risk score gradient text */
+.risk-score-critical { color: #dc2626; font-weight: 700; }
+.risk-score-high { color: #ea580c; font-weight: 700; }
+.risk-score-medium { color: #d97706; font-weight: 700; }
+.risk-score-low { color: #16a34a; font-weight: 700; }
+
+/* Glassmorphism card */
+.glass-card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Loading skeleton */
+.skeleton {
+  background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+@keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
