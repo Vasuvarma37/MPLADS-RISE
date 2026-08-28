@@ -36,7 +36,7 @@ docker-compose up --build
 
 ## Default Login
 - Username: `admin`
-- Password: `rise@mplads2026`
+- Password: *(Set securely via the `ADMIN_PASSWORD` environment variable)*
 
 ## ML Training (Google Colab)
 
