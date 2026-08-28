@@ -91,16 +91,16 @@ export default function AlertsPage() {
           <select
             value={severity}
             onChange={(e) => setSeverity(e.target.value)}
-            className="text-sm border border-slate-300 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="text-sm bg-slate-900 border border-slate-700 text-slate-200 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
-            {SEVERITIES.map(s => <option key={s}>{s}</option>)}
+            {SEVERITIES.map(s => <option key={s} className="bg-slate-900 text-slate-200">{s}</option>)}
           </select>
           <select
             value={status}
             onChange={(e) => setStatus(e.target.value)}
-            className="text-sm border border-slate-300 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="text-sm bg-slate-900 border border-slate-700 text-slate-200 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
-            {STATUSES.map(s => <option key={s}>{s}</option>)}
+            {STATUSES.map(s => <option key={s} className="bg-slate-900 text-slate-200">{s}</option>)}
           </select>
           <span className="text-xs text-slate-400">{alerts.length} alerts shown</span>
         </div>

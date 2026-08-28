@@ -79,46 +79,46 @@ export default function ProjectExplorer() {
               placeholder="Search project ID, name, agency..."
               value={search}
               onChange={(e) => { setSearch(e.target.value); setPage(0); }}
-              className="w-full pl-9 pr-4 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full pl-9 pr-4 py-2 text-sm bg-slate-900 border border-slate-700 text-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-slate-500"
             />
           </div>
           {/* State filter */}
           <select
             value={stateFilter}
             onChange={(e) => { setStateFilter(e.target.value); setPage(0); }}
-            className="text-sm border border-slate-300 rounded-lg px-2.5 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="text-sm bg-slate-900 border border-slate-700 text-slate-200 rounded-lg px-2.5 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
-            {STATES.map(s => <option key={s}>{s}</option>)}
+            {STATES.map(s => <option key={s} className="bg-slate-900 text-slate-200">{s}</option>)}
           </select>
           {/* District search */}
           <div className="relative">
-            <MapPin className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
+            <MapPin className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-500" />
             <input
               type="text"
               placeholder="District..."
               value={districtSearch}
               onChange={(e) => { setDistrictSearch(e.target.value); setPage(0); }}
-              className="pl-8 pr-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 w-36"
+              className="pl-8 pr-3 py-2 text-sm bg-slate-900 border border-slate-700 text-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 w-36 placeholder-slate-500"
             />
           </div>
           {/* Risk filter */}
           <div className="flex items-center gap-1.5">
-            <Filter className="w-4 h-4 text-slate-400" />
+            <Filter className="w-4 h-4 text-slate-500" />
             <select
               value={riskFilter}
               onChange={(e) => { setRiskFilter(e.target.value); setPage(0); }}
-              className="text-sm border border-slate-300 rounded-lg px-2.5 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="text-sm bg-slate-900 border border-slate-700 text-slate-200 rounded-lg px-2.5 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              {RISK_LEVELS.map(r => <option key={r}>{r}</option>)}
+              {RISK_LEVELS.map(r => <option key={r} className="bg-slate-900 text-slate-200">{r}</option>)}
             </select>
           </div>
           {/* Type filter */}
           <select
             value={typeFilter}
             onChange={(e) => { setTypeFilter(e.target.value); setPage(0); }}
-            className="text-sm border border-slate-300 rounded-lg px-2.5 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="text-sm bg-slate-900 border border-slate-700 text-slate-200 rounded-lg px-2.5 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
-            {WORK_TYPES.map(t => <option key={t}>{t}</option>)}
+            {WORK_TYPES.map(t => <option key={t} className="bg-slate-900 text-slate-200">{t}</option>)}
           </select>
           {/* Clear all */}
           {(stateFilter !== 'All States' || districtSearch || riskFilter !== 'All' || typeFilter !== 'All' || search) && (
