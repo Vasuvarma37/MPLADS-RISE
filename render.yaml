@@ -38,5 +38,9 @@ services:
     plan: free
     buildCommand: ""
     startCommand: ""
+    envVars:
+      - key: BACKEND_URL
+        # Points nginx proxy to the actual Render backend service URL
+        value: https://mplads-rise.onrender.com
 
 
