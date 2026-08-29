@@ -7,10 +7,16 @@ COPY . .
 RUN npm run build
 
 # Production stage — nginx
-# nginx:alpine automatically runs envsubst on files in /etc/nginx/templates/
-# replacing ${BACKEND_URL} with the actual env var value at container startup.
 FROM nginx:alpine AS production
 COPY --from=builder /app/dist /usr/share/nginx/html
-COPY nginx.conf /etc/nginx/templates/default.conf.template
+
+# Copy nginx config as a template (contains ${BACKEND_URL} placeholder)
+COPY nginx.conf /etc/nginx/nginx.conf.template
+
+# Entrypoint: substitute ONLY ${BACKEND_URL} then start nginx
+# We explicitly pass the variable list to envsubst so it doesn't
+# accidentally replace nginx's own variables like $host, $uri, etc.
+CMD ["/bin/sh", "-c", \
+  "envsubst '${BACKEND_URL}' < /etc/nginx/nginx.conf.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"]
+
 EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
