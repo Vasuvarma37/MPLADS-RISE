@@ -39,8 +39,9 @@ services:
     buildCommand: ""
     startCommand: ""
     envVars:
-      - key: BACKEND_URL
-        # Points nginx proxy to the actual Render backend service URL
-        value: https://mplads-rise.onrender.com
+      - key: VITE_API_URL
+        # Baked into the React bundle at Docker build time via ARG VITE_API_URL
+        # This makes the browser call the backend API directly — no nginx proxy needed
+        value: https://mplads-rise.onrender.com/api
 
 

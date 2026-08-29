@@ -4,22 +4,16 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm ci
 COPY . .
+# VITE_API_URL is baked into the React bundle at build time.
+# On Render: passed as a build env var pointing to the backend URL.
+# Locally: not set, falls back to '/api' and nginx proxies it.
+ARG VITE_API_URL
+ENV VITE_API_URL=${VITE_API_URL}
 RUN npm run build
 
-# Production stage — nginx
+# Production stage — nginx (serves static files only)
 FROM nginx:alpine AS production
 COPY --from=builder /app/dist /usr/share/nginx/html
-
-# Default backend URL — override via BACKEND_URL env var in Render dashboard
-ENV BACKEND_URL=https://mplads-rise.onrender.com
-
-# Copy nginx config as a template (contains ${BACKEND_URL} placeholder)
-COPY nginx.conf /etc/nginx/nginx.conf.template
-
-# Entrypoint: substitute ONLY ${BACKEND_URL} then start nginx
-# We explicitly pass the variable list to envsubst so it doesn't
-# accidentally replace nginx's own variables like $host, $uri, etc.
-CMD ["/bin/sh", "-c", \
-  "envsubst '${BACKEND_URL}' < /etc/nginx/nginx.conf.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"]
-
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
