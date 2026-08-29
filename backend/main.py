@@ -59,6 +59,7 @@ async def lifespan(app: FastAPI):
     from database import SessionLocal
     from models.orm_models import User
     from security import get_password_hash
+    from sqlalchemy.exc import IntegrityError
     import os
     
     db = SessionLocal()
@@ -72,10 +73,16 @@ async def lifespan(app: FastAPI):
                 role="admin"
             )
             db.add(admin_user)
-            db.commit()
-            logger.info(f"✅ Created default admin user: {admin_username}")
+            try:
+                db.commit()
+                logger.info(f"✅ Created default admin user: {admin_username}")
+            except IntegrityError:
+                # Another worker already created the user simultaneously — that's fine
+                db.rollback()
+                logger.info(f"ℹ️ Admin user already exists (created by another worker)")
     finally:
         db.close()
+
     
     logger.info("✅ MPLADS RISE API ready")
     yield
