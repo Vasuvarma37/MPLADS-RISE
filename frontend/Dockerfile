@@ -10,6 +10,9 @@ RUN npm run build
 FROM nginx:alpine AS production
 COPY --from=builder /app/dist /usr/share/nginx/html
 
+# Default backend URL — override via BACKEND_URL env var in Render dashboard
+ENV BACKEND_URL=https://mplads-rise.onrender.com
+
 # Copy nginx config as a template (contains ${BACKEND_URL} placeholder)
 COPY nginx.conf /etc/nginx/nginx.conf.template
 
