@@ -1,5 +1,7 @@
 """
-MPLADS RISE — Database Setup (SQLAlchemy + PostgreSQL)
+MPLADS RISE — Database Setup (SQLAlchemy)
+On Render: DATABASE_URL points to Supabase (PostgreSQL).
+Locally:   DATABASE_URL defaults to sqlite:///./mplads_rise.db (set in config.py).
 """
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
@@ -8,22 +10,20 @@ from config import get_settings
 
 settings = get_settings()
 
-is_sqlite = settings.database_url.startswith("sqlite")
+db_url = settings.database_url
+is_sqlite = db_url.startswith("sqlite")
+
+# SQLite needs check_same_thread=False; PostgreSQL doesn't
 connect_args = {"check_same_thread": False} if is_sqlite else {}
 
-# Ensure sqlite paths are absolute to avoid split-brain DBs based on CWD
-db_url = settings.database_url
-if is_sqlite and "sqlite:///./" in db_url:
-    import os
-    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    db_name = db_url.split("sqlite:///./")[1]
-    db_url = f"sqlite:///{os.path.join(base_dir, db_name)}"
+# PostgreSQL connection pooling
+pool_kwargs = {} if is_sqlite else {"pool_size": 10, "max_overflow": 20}
 
 engine = create_engine(
     db_url,
     connect_args=connect_args,
     pool_pre_ping=True,
-    **({} if is_sqlite else {"pool_size": 10, "max_overflow": 20})
+    **pool_kwargs
 )
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()

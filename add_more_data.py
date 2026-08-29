@@ -22,7 +22,7 @@ import requests
 # ── Config ───────────────────────────────────────────────────────────────
 BASE_URL = "https://mplads-rise.onrender.com/api"   # your backend service
 ADMIN_USER = "admin"
-ADMIN_PASS = "rise@mplads2026"
+ADMIN_PASS = "admin123" # Update this if you used a different password in Render!
 NUM_PROJECTS = 150          # how many new projects to add
 ANOMALY_RATE = 0.18         # ~18% of projects will be deliberately "suspicious"
 

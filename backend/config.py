@@ -7,17 +7,19 @@ from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
-    # Database
-    database_url: str
+    # Database — set DATABASE_URL in Render environment variables to your Supabase URL
+    database_url: str = "sqlite:///./mplads_rise.db"
     
     # Security
-    secret_key: str
+    secret_key: str = "change-me-in-production"
     algorithm: str = "HS256"
     access_token_expire_minutes: int = 480
     
     # App
     app_env: str = "development"
-    frontend_url: str
+    # FRONTEND_URL is used for CORS. Set it in Render env vars to your frontend URL.
+    # The backend's _build_cors_origins() function handles http/https variants automatically.
+    frontend_url: str = "http://localhost:5174"
     rate_limit_ai: int = 10  # requests per minute
 
     model_config = {

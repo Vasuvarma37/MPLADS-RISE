@@ -22,6 +22,30 @@ logger = logging.getLogger(__name__)
 settings = get_settings()
 
 
+def _build_cors_origins() -> list[str]:
+    """Build the list of allowed CORS origins from environment.
+    Handles both https:// and plain host formats from Render."""
+    origins = set()
+    # Always allow localhost for local development
+    origins.add("http://localhost:5173")
+    origins.add("http://localhost:5174")
+    origins.add("http://localhost:3000")
+
+    raw = os.environ.get("FRONTEND_URL", "").strip().rstrip("/")
+    if raw:
+        origins.add(raw)
+        # Ensure both http and https variants are covered
+        if raw.startswith("https://"):
+            origins.add(raw.replace("https://", "http://", 1))
+        elif raw.startswith("http://"):
+            origins.add(raw.replace("http://", "https://", 1))
+        else:
+            # No scheme — add both
+            origins.add(f"http://{raw}")
+            origins.add(f"https://{raw}")
+    return list(origins)
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Application startup / shutdown."""
@@ -30,6 +54,28 @@ async def lifespan(app: FastAPI):
     # Create tables
     Base.metadata.create_all(bind=engine)
     logger.info("✅ Database tables created")
+    
+    # Seed admin user if it doesn't exist
+    from database import SessionLocal
+    from models.orm_models import User
+    from security import get_password_hash
+    import os
+    
+    db = SessionLocal()
+    try:
+        admin_username = os.environ.get("ADMIN_USERNAME", "admin")
+        admin_password = os.environ.get("ADMIN_PASSWORD", "admin123")
+        if not db.query(User).filter(User.username == admin_username).first():
+            admin_user = User(
+                username=admin_username,
+                hashed_password=get_password_hash(admin_password),
+                role="admin"
+            )
+            db.add(admin_user)
+            db.commit()
+            logger.info(f"✅ Created default admin user: {admin_username}")
+    finally:
+        db.close()
     
     logger.info("✅ MPLADS RISE API ready")
     yield
@@ -49,9 +95,11 @@ app = FastAPI(
 )
 
 # CORS
+_allowed_origins = _build_cors_origins()
+logger.info(f"CORS allowed origins: {_allowed_origins}")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[settings.frontend_url],
+    allow_origins=_allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
